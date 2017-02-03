@@ -97,11 +97,11 @@ import javax.management.openmbean.CompositeData;
 public class GraphTaskManager<I extends WritableComparable, V extends Writable,
   E extends Writable> implements
   ResetSuperstepMetricsObserver {
-/*if_not[PURE_YARN]
+
   static { // Eliminate this? Even MRv1 tasks should not need it here.
     Configuration.addDefaultResource("giraph-site.xml");
   }
-end[PURE_YARN]*/
+
   /**
    * Class which checks if an exception on some thread should cause worker
    * to fail

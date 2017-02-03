@@ -499,11 +499,11 @@ public class BspServiceWorker<I extends WritableComparable,
         getWorkerInfo(), masterSetPartitionOwners);
     getPartitionStore().initialize();
 
-/*if[HADOOP_NON_SECURE]
-    workerClient.setup();
-else[HADOOP_NON_SECURE]*/
+
+
+
     workerClient.setup(getConfiguration().authenticate());
-/*end[HADOOP_NON_SECURE]*/
+
 
     // Initialize aggregator at worker side during setup.
     // Do this just before vertex and edge loading.
@@ -1549,11 +1549,11 @@ else[HADOOP_NON_SECURE]*/
 
       // Communication service needs to setup the connections prior to
       // processing vertices
-/*if[HADOOP_NON_SECURE]
-      workerClient.setup();
-else[HADOOP_NON_SECURE]*/
+
+
+
       workerClient.setup(getConfiguration().authenticate());
-/*end[HADOOP_NON_SECURE]*/
+
       return new VertexEdgeCount(globalStats.getVertexCount(),
           globalStats.getEdgeCount(), 0);
 

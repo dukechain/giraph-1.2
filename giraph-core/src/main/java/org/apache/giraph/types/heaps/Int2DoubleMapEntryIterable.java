@@ -18,27 +18,27 @@
 
 package org.apache.giraph.types.heaps;
 
-import it.unimi.dsi.fastutil.ints.Int2DoubleMap;;
+import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterable;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
 /**
  * Iterable which has its size and ObjectIterator<Int2DoubleMap.Entry>
  */
-public interface Int2DoubleMapEntryIterable
-    extends ObjectIterable<Int2DoubleMap.Entry> {
-  /**
-   * Get the iterator. Not thread-safe and reuses iterator object,
-   * so you can't have several iterators at the same time.
-   *
-   * @return Iterator
-   */
-  ObjectIterator<Int2DoubleMap.Entry> iterator();
+public interface Int2DoubleMapEntryIterable extends
+		ObjectIterable<Int2DoubleMap.Entry> {
+	/**
+	 * Get the iterator. Not thread-safe and reuses iterator object, so you
+	 * can't have several iterators at the same time.
+	 * 
+	 * @return Iterator
+	 */
+	ObjectIterator<Int2DoubleMap.Entry> iterator();
 
-  /**
-   * Get the size of this iterable
-   *
-   * @return Size
-   */
-  int size();
+	/**
+	 * Get the size of this iterable
+	 * 
+	 * @return Size
+	 */
+	int size();
 }

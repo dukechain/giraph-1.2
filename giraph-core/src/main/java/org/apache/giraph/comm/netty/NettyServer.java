@@ -19,15 +19,15 @@
 package org.apache.giraph.comm.netty;
 
 import org.apache.giraph.comm.flow_control.FlowControl;
-/*if_not[HADOOP_NON_SECURE]*/
+
 import org.apache.giraph.comm.netty.handler.AuthorizeServerHandler;
-/*end[HADOOP_NON_SECURE]*/
+
 import org.apache.giraph.comm.netty.handler.RequestDecoder;
 import org.apache.giraph.comm.netty.handler.RequestServerHandler;
-/*if_not[HADOOP_NON_SECURE]*/
+
 import org.apache.giraph.comm.netty.handler.ResponseEncoder;
 import org.apache.giraph.comm.netty.handler.SaslServerHandler;
-/*end[HADOOP_NON_SECURE]*/
+
 import org.apache.giraph.comm.netty.handler.WorkerRequestReservedMap;
 import org.apache.giraph.conf.GiraphConstants;
 import org.apache.giraph.conf.ImmutableClassesGiraphConfiguration;
@@ -50,9 +50,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-/*if_not[HADOOP_NON_SECURE]*/
+
 import io.netty.util.AttributeKey;
-/*end[HADOOP_NON_SECURE]*/
+
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.ImmediateEventExecutor;
@@ -72,11 +72,11 @@ public class NettyServer {
   public static final int MAXIMUM_THREAD_POOL_SIZE_DEFAULT = 32;
 
 
-/*if_not[HADOOP_NON_SECURE]*/
+
   /** Used to authenticate with netty clients */
   public static final AttributeKey<SaslNettyServer>
   CHANNEL_SASL_NETTY_SERVERS = AttributeKey.valueOf("channelSaslServers");
-/*end[HADOOP_NON_SECURE]*/
+
 
   /** Class logger */
   private static final Logger LOG = Logger.getLogger(NettyServer.class);
@@ -99,10 +99,10 @@ public class NettyServer {
   private final int tcpBacklog;
   /** Factory for {@link RequestServerHandler} */
   private final RequestServerHandler.Factory requestServerHandlerFactory;
-/*if_not[HADOOP_NON_SECURE]*/
+
   /** Factory for {@link RequestServerHandler} */
   private SaslServerHandler.Factory saslServerHandlerFactory;
-/*end[HADOOP_NON_SECURE]*/
+
   /** Server bootstrap */
   private ServerBootstrap bootstrap;
   /** Inbound byte counter for this client */
@@ -144,9 +144,9 @@ public class NettyServer {
     this.conf = conf;
     this.progressable = progressable;
     this.requestServerHandlerFactory = requestServerHandlerFactory;
-/*if_not[HADOOP_NON_SECURE]*/
+
     this.saslServerHandlerFactory = new SaslServerHandler.Factory();
-/*end[HADOOP_NON_SECURE]*/
+
     this.myTaskInfo = myTaskInfo;
     this.exceptionHandler = exceptionHandler;
     sendBufferSize = GiraphConstants.SERVER_SEND_BUFFER_SIZE.get(conf);
@@ -193,7 +193,7 @@ public class NettyServer {
     }
   }
 
-/*if_not[HADOOP_NON_SECURE]*/
+
   /**
    * Constructor for creating the server
    *
@@ -214,7 +214,7 @@ public class NettyServer {
         progressable, exceptionHandler);
     this.saslServerHandlerFactory = saslServerHandlerFactory;
   }
-/*end[HADOOP_NON_SECURE]*/
+
 
   /**
    * Start the server with the appropriate port
@@ -241,7 +241,7 @@ public class NettyServer {
     bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
       @Override
       protected void initChannel(SocketChannel ch) throws Exception {
-/*if_not[HADOOP_NON_SECURE]*/
+
         if (conf.authenticate()) {
           LOG.info("start: Will use Netty pipeline with " +
               "authentication and authorization of clients.");
@@ -286,7 +286,7 @@ public class NettyServer {
               executionGroup, ch);
         } else {
           LOG.info("start: Using Netty without authentication.");
-/*end[HADOOP_NON_SECURE]*/
+
           // Store all connected channels in order to ensure that we can close
           // them on stop(), or else stop() may hang waiting for the
           // connections to close on their own
@@ -323,9 +323,9 @@ public class NettyServer {
               requestServerHandlerFactory.newHandler(
                   workerRequestReservedMap, conf, myTaskInfo, exceptionHandler),
               handlerToUseExecutionGroup, executionGroup, ch);
-/*if_not[HADOOP_NON_SECURE]*/
+
         }
-/*end[HADOOP_NON_SECURE]*/
+
       }
     });
 

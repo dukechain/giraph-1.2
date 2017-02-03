@@ -21,9 +21,9 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.giraph.utils.ConfigurationUtils;
 import org.apache.giraph.conf.GiraphConfiguration;
 import org.apache.giraph.job.GiraphJob;
-/*if[PURE_YARN]
-import org.apache.giraph.yarn.GiraphYarnClient;
-end[PURE_YARN]*/
+
+
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
@@ -79,12 +79,12 @@ public class GiraphRunner implements Tool {
     // set up job for various platforms
     final String vertexClassName = args[0];
     final String jobName = "Giraph: " + vertexClassName;
-/*if[PURE_YARN]
-    GiraphYarnClient job = new GiraphYarnClient(giraphConf, jobName);
-else[PURE_YARN]*/
+
+
+
     GiraphJob job = new GiraphJob(giraphConf, jobName);
     prepareHadoopMRJob(job, cmd);
-/*end[PURE_YARN]*/
+
 
     // run the job, collect results
     if (LOG.isDebugEnabled()) {

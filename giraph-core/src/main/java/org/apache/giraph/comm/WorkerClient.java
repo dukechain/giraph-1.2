@@ -42,9 +42,9 @@ public interface WorkerClient<I extends WritableComparable,
   /**
    *  Setup the client.
    */
-/*if[HADOOP_NON_SECURE]
-  void setup();
-else[HADOOP_NON_SECURE]*/
+
+
+
   /**
    * Setup the client.
    *
@@ -52,7 +52,7 @@ else[HADOOP_NON_SECURE]*/
    * set by giraph.authenticate configuration option.
    */
   void setup(boolean authenticate);
-/*end[HADOOP_NON_SECURE]*/
+
 
   /**
    * Lookup PartitionOwner for a vertex.
@@ -88,15 +88,15 @@ else[HADOOP_NON_SECURE]*/
    */
   void closeConnections() throws IOException;
 
-/*if[HADOOP_NON_SECURE]
-else[HADOOP_NON_SECURE]*/
+
+
   /**
    * Authenticates, as client, with another BSP worker, as server.
    *
    * @throws IOException
    */
   void authenticate() throws IOException;
-/*end[HADOOP_NON_SECURE]*/
+
 
   /**
    * @return the flow control used in sending requests

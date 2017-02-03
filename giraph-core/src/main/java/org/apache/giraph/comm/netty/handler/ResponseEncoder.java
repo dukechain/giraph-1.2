@@ -19,10 +19,10 @@
 package org.apache.giraph.comm.netty.handler;
 
 import io.netty.buffer.ByteBufOutputStream;
-/*if[HADOOP_NON_SECURE]
-else[HADOOP_NON_SECURE]*/
+
+
 import org.apache.giraph.comm.requests.RequestType;
-/*end[HADOOP_NON_SECURE]*/
+
 import org.apache.giraph.comm.requests.WritableRequest;
 import org.apache.log4j.Logger;
 import io.netty.buffer.ByteBuf;
@@ -81,8 +81,8 @@ public class ResponseEncoder extends ChannelOutboundHandlerAdapter {
       LOG.debug("encode: Encoding a message of type " + msg.getClass());
     }
     ctx.write(buf, promise);
-/*if[HADOOP_NON_SECURE]
-else[HADOOP_NON_SECURE]*/
+
+
     if (writableRequest.getType() == RequestType.SASL_COMPLETE_REQUEST) {
       // We are sending to the client a SASL_COMPLETE response (created by
       // the SaslServer handler). The SaslServer handler has removed itself
@@ -95,7 +95,7 @@ else[HADOOP_NON_SECURE]*/
       }
       ctx.pipeline().remove(this);
     }
-/*end[HADOOP_NON_SECURE]*/
+
     ctx.write(buf, promise);
   }
 }

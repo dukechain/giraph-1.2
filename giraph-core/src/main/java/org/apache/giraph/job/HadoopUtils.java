@@ -24,10 +24,10 @@ import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-/*if_not[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
-import org.apache.hadoop.mapreduce.task.JobContextImpl;
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
-/*end[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
+
+
+
+
 
 /**
  * Helpers for dealing with Hadoop.
@@ -46,11 +46,13 @@ public class HadoopUtils {
   public static TaskAttemptContext makeTaskAttemptContext(Configuration conf,
       TaskAttemptID taskAttemptID) {
     TaskAttemptContext context;
-/*if[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]
+
     context = new TaskAttemptContext(conf, taskAttemptID);
-else[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
-    context = new TaskAttemptContextImpl(conf, taskAttemptID);
-/*end[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
+
+
+
+
+
     return context;
   }
 
@@ -94,11 +96,13 @@ else[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
    */
   public static JobContext makeJobContext(Configuration conf, JobID jobID) {
     JobContext context;
-/*if[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]
+
     context = new JobContext(conf, jobID);
-else[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
-    context = new JobContextImpl(conf, jobID);
-/*end[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
+
+
+
+
+
     return context;
   }
 
@@ -109,11 +113,11 @@ else[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
    * @return JobId for submitted job.
    */
   public static JobID getJobID(Job job) {
-/*if[HADOOP_JOB_ID_AVAILABLE]
-    return job.getID();
-else[HADOOP_JOB_ID_AVAILABLE]*/
+
+
+
     return job.getJobID();
-/*end[HADOOP_JOB_ID_AVAILABLE]*/
+
   }
 
   /**

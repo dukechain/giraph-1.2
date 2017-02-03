@@ -72,18 +72,18 @@ public final class ConfigurationUtils {
   /** Class logger */
   private static final Logger LOG =
     Logger.getLogger(ConfigurationUtils.class);
-/*if[PURE_YARN]
-  // The base path for output dirs as saved in GiraphConfiguration
-  private static final Path BASE_OUTPUT_PATH;
-  static {
-    // whether local or remote, if there's no *-site.xml's to find, we're done
-    try {
-      BASE_OUTPUT_PATH = FileSystem.get(new Configuration()).getHomeDirectory();
-    } catch (IOException ioe) {
-      throw new IllegalStateException("Error locating default base path!", ioe);
-    }
-  }
-end[PURE_YARN]*/
+
+
+
+
+
+
+
+
+
+
+
+
   /** Maintains our accepted options in case the caller wants to add some */
   private static Options OPTIONS;
 
@@ -450,26 +450,26 @@ end[PURE_YARN]*/
       conf.setYarnTaskHeapMb(
           Integer.parseInt(cmd.getOptionValue("yh")));
     }
-/*if[PURE_YARN]
-    if (cmd.hasOption("vof") || cmd.hasOption("eof")) {
-      if (cmd.hasOption("op")) {
-        // For YARN conf to get the out dir we need w/o a Job obj
-        Path outputDir =
-            new Path(BASE_OUTPUT_PATH, cmd.getOptionValue("op"));
-        outputDir =
-          outputDir.getFileSystem(conf).makeQualified(outputDir);
-        conf.set(
-            org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.OUTDIR,
-            outputDir.toString());
 
-      } else {
-        if (LOG.isInfoEnabled()) {
-          LOG.info("No output path specified. Ensure your OutputFormat " +
-            "does not require one.");
-        }
-      }
-    }
-end[PURE_YARN]*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // END YARN-ONLY OPTIONS
     handleComputationClass(conf, cmd, computationClassName);
   }

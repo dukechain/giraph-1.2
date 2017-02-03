@@ -37,10 +37,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/*if[HADOOP_NON_SECURE]
-else[HADOOP_NON_SECURE]
+
+
+
+
 import org.apache.hadoop.mapreduce.security.TokenCache;
-end[HADOOP_NON_SECURE]*/
+
 
 /**
  * Provides functionality similar to {@link FileInputFormat},
@@ -223,12 +225,16 @@ public abstract class GiraphFileInputFormat<K, V>
       throw new IOException("No input paths specified in job");
     }
 
-/*if[HADOOP_NON_SECURE]
-else[HADOOP_NON_SECURE]
+
+
+
+
+
+
     // get tokens for all the required FileSystems..
     TokenCache.obtainTokensForNamenodes(job.getCredentials(), dirs,
         job.getConfiguration());
-end[HADOOP_NON_SECURE]*/
+
 
     List<IOException> errors = new ArrayList<IOException>();
 

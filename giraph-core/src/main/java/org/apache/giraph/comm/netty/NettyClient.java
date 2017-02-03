@@ -29,11 +29,11 @@ import org.apache.giraph.comm.netty.handler.RequestEncoder;
 import org.apache.giraph.comm.netty.handler.RequestInfo;
 import org.apache.giraph.comm.netty.handler.RequestServerHandler;
 import org.apache.giraph.comm.netty.handler.ResponseClientHandler;
-/*if_not[HADOOP_NON_SECURE]*/
+
 import org.apache.giraph.comm.netty.handler.SaslClientHandler;
 import org.apache.giraph.comm.requests.RequestType;
 import org.apache.giraph.comm.requests.SaslTokenMessageRequest;
-/*end[HADOOP_NON_SECURE]*/
+
 import org.apache.giraph.comm.requests.WritableRequest;
 import org.apache.giraph.conf.BooleanConfOption;
 import org.apache.giraph.conf.GiraphConstants;
@@ -52,9 +52,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 
-/*if_not[HADOOP_NON_SECURE]*/
+
 import java.io.IOException;
-/*end[HADOOP_NON_SECURE]*/
+
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,10 +76,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.FixedLengthFrameDecoder;
-/*if_not[HADOOP_NON_SECURE]*/
+
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.util.AttributeKey;
-/*end[HADOOP_NON_SECURE]*/
+
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
 
@@ -125,11 +125,11 @@ public class NettyClient {
   public static final int MAX_DESTINATION_TASK_IDS_TO_LIST = 10;
   /** 30 seconds to connect by default */
   public static final int MAX_CONNECTION_MILLISECONDS_DEFAULT = 30 * 1000;
-/*if_not[HADOOP_NON_SECURE]*/
+
   /** Used to authenticate with other workers acting as servers */
   public static final AttributeKey<SaslNettyClient> SASL =
       AttributeKey.valueOf("saslNettyClient");
-/*end[HADOOP_NON_SECURE]*/
+
   /** Class logger */
   private static final Logger LOG = Logger.getLogger(NettyClient.class);
   /** Context used to report progress */
@@ -287,7 +287,7 @@ public class NettyClient {
         .handler(new ChannelInitializer<SocketChannel>() {
           @Override
           protected void initChannel(SocketChannel ch) throws Exception {
-/*if_not[HADOOP_NON_SECURE]*/
+
             if (conf.authenticate()) {
               LOG.info("Using Netty with authentication.");
 
@@ -341,7 +341,7 @@ public class NettyClient {
                   handlerToUseExecutionGroup, executionGroup, ch);
             } else {
               LOG.info("Using Netty without authentication.");
-/*end[HADOOP_NON_SECURE]*/
+
               PipelineUtils.addLastWithExecutorCheck("clientInboundByteCounter",
                   inboundByteCounter, handlerToUseExecutionGroup,
                   executionGroup, ch);
@@ -371,9 +371,9 @@ public class NettyClient {
                   new ResponseClientHandler(NettyClient.this, conf),
                   handlerToUseExecutionGroup, executionGroup, ch);
 
-/*if_not[HADOOP_NON_SECURE]*/
+
             }
-/*end[HADOOP_NON_SECURE]*/
+
           }
         });
   }
@@ -539,7 +539,7 @@ public class NettyClient {
     }
   }
 
-/*if_not[HADOOP_NON_SECURE]*/
+
   /**
    * Authenticate all servers in addressChannelMap.
    */
@@ -614,7 +614,7 @@ public class NettyClient {
     }
     return;
   }
-/*end[HADOOP_NON_SECURE]*/
+
 
   /**
    * Stop the client.
@@ -743,11 +743,11 @@ public class NettyClient {
     }
     boolean registerRequest = true;
     Long requestId = null;
-/*if_not[HADOOP_NON_SECURE]*/
+
     if (request.getType() == RequestType.SASL_TOKEN_MESSAGE_REQUEST) {
       registerRequest = false;
     }
-/*end[HADOOP_NON_SECURE]*/
+
 
     Channel channel = getNextChannel(remoteServer);
     RequestInfo newRequestInfo = new RequestInfo(remoteServer, request);
