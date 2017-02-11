@@ -185,6 +185,10 @@ public class AllAggregatorServerData {
 				+ Collections.singleton(masterInfo.getTaskId()));
 		masterBarrier.waitForRequiredPermits(Collections.singleton(masterInfo
 				.getTaskId()));
+
+		LOG.info("getDataFromMasterWhenReady: "
+				+ "Aggregator data for distribution ready");
+
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("getDataFromMasterWhenReady: "
 					+ "Aggregator data for distribution ready");
