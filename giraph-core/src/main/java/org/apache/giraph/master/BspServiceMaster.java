@@ -1646,9 +1646,13 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 		// If the master is halted or all the vertices voted to halt and there
 		// are no more messages in the system, stop the computation
 		GlobalStats globalStats = aggregateWorkerStats(getSuperstep());
+
+		LOG.info("Sucessfully aggregateWorkerStats!");
+
 		if (masterCompute.isHalted()
 				|| (globalStats.getFinishedVertexCount() == globalStats
 						.getVertexCount() && globalStats.getMessageCount() == 0)) {
+			LOG.info("globalStats.setHaltComputation(true)!");
 			globalStats.setHaltComputation(true);
 		} else if (getZkExt().exists(haltComputationPath, false) != null) {
 			if (LOG.isInfoEnabled()) {
@@ -1656,6 +1660,8 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			}
 			globalStats.setHaltComputation(true);
 		}
+
+		LOG.info("Sucessfully masterCompute!");
 
 		// If we have completed the maximum number of supersteps, stop
 		// the computation
@@ -1670,6 +1676,8 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			globalStats.setHaltComputation(true);
 		}
 
+		LOG.info("Sucessfully skip the maximum number of supersteps!");
+
 		// Superstep 0 doesn't need to have matching types (Message types may
 		// not
 		// match) and if the computation is halted, no need to check any of
@@ -1679,6 +1687,7 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 		}
 		getConfiguration().updateSuperstepClasses(superstepClasses);
 
+		LOG.info("Signal workers that we want to checkpoint!");
 		// Signal workers that we want to checkpoint
 		checkpointStatus = getCheckpointStatus(getSuperstep() + 1);
 		globalStats.setCheckpointStatus(checkpointStatus);
