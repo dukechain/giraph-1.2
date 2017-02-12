@@ -108,9 +108,12 @@ public class TaskIdsPermitsBarrier {
 							+ " more tasks to send their aggregator data"
 							+ logSuffix);
 
-					logger.info("expectedTaskIds: " + expectedTaskIds
+					LOG.info("expectedTaskIds: " + expectedTaskIds
 							+ " arrivedTaskIds: " + arrivedTaskIds);
 				} else {
+					LOG.info("expectedTaskIds: " + expectedTaskIds
+							+ " arrivedTaskIds: " + arrivedTaskIds);
+
 					logger.info("waitForRequiredPermits: " + "Waiting for "
 							+ waitingOnPermits + " more aggregator requests");
 				}
