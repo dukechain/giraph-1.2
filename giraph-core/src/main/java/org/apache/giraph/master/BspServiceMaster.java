@@ -905,10 +905,15 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 		// Get the stats from the all the worker selected nodes
 		String workerFinishedPath = getWorkerFinishedPath(
 				getApplicationAttempt(), superstep);
+
+		LOG.info("workerFinishedPath: " + workerFinishedPath);
+
 		List<String> workerFinishedPathList = null;
 		try {
 			workerFinishedPathList = getZkExt().getChildrenExt(
 					workerFinishedPath, false, false, true);
+
+			LOG.info("workerFinishedPathList: " + workerFinishedPathList);
 		} catch (KeeperException e) {
 			throw new IllegalStateException(
 					"aggregateWorkerStats: KeeperException", e);
@@ -920,12 +925,18 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 		AggregatedMetrics aggregatedMetrics = new AggregatedMetrics();
 
 		for (String finishedPath : workerFinishedPathList) {
+			LOG.info("current workerFinishedPath is: " + finishedPath);
+
 			String hostnamePartitionId = FilenameUtils.getName(finishedPath);
 			JSONObject workerFinishedInfoObj = null;
 			try {
 				byte[] zkData = getZkExt().getData(finishedPath, false, null);
+
 				workerFinishedInfoObj = new JSONObject(new String(zkData,
 						Charset.defaultCharset()));
+
+				LOG.info("data returned from zk " + workerFinishedInfoObj);
+
 				globalStats.addMessageCount(workerFinishedInfoObj
 						.getLong(JSONOBJ_NUM_MESSAGES_KEY));
 				globalStats.addMessageBytesCount(workerFinishedInfoObj
@@ -950,6 +961,8 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 									.getGraphPercentageInMemory())));
 					aggregatedMetrics.add(workerMetrics, hostnamePartitionId);
 				}
+
+				LOG.info("finish the loop on " + finishedPath);
 			} catch (JSONException e) {
 				throw new IllegalStateException(
 						"aggregateWorkerStats: JSONException", e);
@@ -965,6 +978,8 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			}
 		}
 
+		LOG.info("finished loop of workerFinishedPathList");
+
 		allPartitionStatsList.clear();
 		Iterable<PartitionStats> statsList = globalCommHandler
 				.getAllPartitionStats(workerFinishedPathList.size(),
@@ -974,7 +989,11 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			allPartitionStatsList.add(partitionStats);
 		}
 
+		LOG.info("finished loop of statsList");
+
 		if (conf.metricsEnabled()) {
+			LOG.info("conf.metricsEnabled()");
+
 			if (GiraphConstants.METRICS_DIRECTORY.isDefaultValue(conf)) {
 				aggregatedMetrics.print(superstep, System.err);
 			} else {

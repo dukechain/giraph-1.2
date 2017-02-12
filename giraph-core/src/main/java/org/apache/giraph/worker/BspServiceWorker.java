@@ -778,7 +778,8 @@ public class BspServiceWorker<I extends WritableComparable, V extends Writable, 
 		String superstepFinishedNode = getSuperstepFinishedPath(
 				getApplicationAttempt(), getSuperstep());
 
-		LOG.info("waitForOtherWorkers()");
+		LOG.info("waitForOtherWorkers() on superstepFinishedNode:"
+				+ superstepFinishedNode);
 
 		waitForOtherWorkers(superstepFinishedNode);
 
@@ -847,9 +848,14 @@ public class BspServiceWorker<I extends WritableComparable, V extends Writable, 
 	 *            ZooKeeper path to wait on.
 	 */
 	private void waitForOtherWorkers(String superstepFinishedNode) {
+		LOG.info("enter waitForOtherWorkers() superstepFinishedNode "
+				+ superstepFinishedNode);
 		try {
 			while (getZkExt().exists(superstepFinishedNode, true) == null) {
+				LOG.info("getSuperstepFinishedEvent().waitForever() ");
 				getSuperstepFinishedEvent().waitForever();
+
+				LOG.info("getSuperstepFinishedEvent().reset() ");
 				getSuperstepFinishedEvent().reset();
 			}
 		} catch (KeeperException e) {
