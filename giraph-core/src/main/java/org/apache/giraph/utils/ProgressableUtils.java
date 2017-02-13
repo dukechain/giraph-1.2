@@ -246,10 +246,12 @@ public class ProgressableUtils {
 			try {
 				waitable.waitFor(currentWaitMsecs);
 
-				LOG.info("waitFor: avaiable permits: "
-						+ ((SemaphoreWaitable) waitable).semaphore
-								.availablePermits() + "required permits: "
-						+ ((SemaphoreWaitable) waitable).permits);
+				if (waitable instanceof SemaphoreWaitable) {
+					LOG.info("waitFor: avaiable permits: "
+							+ ((SemaphoreWaitable) waitable).semaphore
+									.availablePermits() + " required permits: "
+							+ ((SemaphoreWaitable) waitable).permits);
+				}
 
 				if (waitable.isFinished()) {
 					return waitable.getResult();
