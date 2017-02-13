@@ -18,6 +18,8 @@
 
 package org.apache.giraph.comm.netty.handler;
 
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.giraph.comm.netty.NettyServer;
 import org.apache.giraph.conf.GiraphConstants;
 import org.apache.giraph.utils.IncreasingBitSet;
@@ -25,56 +27,62 @@ import org.apache.hadoop.conf.Configuration;
 
 import com.google.common.collect.MapMaker;
 
-import java.util.concurrent.ConcurrentMap;
-
 /**
  * Provides a thread-safe map for checking worker and request id pairs
  */
 public class WorkerRequestReservedMap {
-  /** Map of the worker ids to the requests received (bit set) */
-  private final ConcurrentMap<Integer, IncreasingBitSet>
-  workerRequestReservedMap;
+	/** Map of the worker ids to the requests received (bit set) */
+	private final ConcurrentMap<Integer, IncreasingBitSet> workerRequestReservedMap;
 
-  /**
-   * Constructor
-   *
-   * @param conf Configuration
-   */
-  public WorkerRequestReservedMap(Configuration conf) {
-    workerRequestReservedMap = new MapMaker().concurrencyLevel(
-        conf.getInt(GiraphConstants.MSG_NUM_FLUSH_THREADS,
-            NettyServer.MAXIMUM_THREAD_POOL_SIZE_DEFAULT)).makeMap();
-  }
+	/**
+	 * Constructor
+	 * 
+	 * @param conf
+	 *            Configuration
+	 */
+	public WorkerRequestReservedMap(Configuration conf) {
+		workerRequestReservedMap = new MapMaker().concurrencyLevel(
+				conf.getInt(GiraphConstants.MSG_NUM_FLUSH_THREADS,
+						NettyServer.MAXIMUM_THREAD_POOL_SIZE_DEFAULT))
+				.makeMap();
+	}
 
-  /**
-   * Reserve the request (before the request starts to insure that it is
-   * only executed once).  We are assuming no failure on the server.
-   *
-   * @param workerId workerId of the request
-   * @param requestId Request id
-   * @return True if the reserving succeeded, false otherwise
-   */
-  public boolean reserveRequest(Integer workerId, long requestId) {
-    IncreasingBitSet requestSet = getRequestSet(workerId);
-    return requestSet.add(requestId);
-  }
+	/**
+	 * Reserve the request (before the request starts to insure that it is only
+	 * executed once). We are assuming no failure on the server.
+	 * 
+	 * @param workerId
+	 *            workerId of the request
+	 * @param requestId
+	 *            Request id
+	 * @return True if the reserving succeeded, false otherwise
+	 */
+	public boolean reserveRequest(Integer workerId, long requestId) {
+		IncreasingBitSet requestSet = getRequestSet(workerId);
+		return requestSet.add(requestId);
+	}
 
-  /**
-   * Get and create the entry as necessary to get the request bit set.
-   *
-   * @param workerId Id of the worker to get the bit set for
-   * @return Bit set for the worker
-   */
-  private IncreasingBitSet getRequestSet(Integer workerId) {
-    IncreasingBitSet requestSet = workerRequestReservedMap.get(workerId);
-    if (requestSet == null) {
-      requestSet = new IncreasingBitSet();
-      IncreasingBitSet previous =
-          workerRequestReservedMap.putIfAbsent(workerId, requestSet);
-      if (previous != null) {
-        requestSet = previous;
-      }
-    }
-    return requestSet;
-  }
+	/**
+	 * Get and create the entry as necessary to get the request bit set.
+	 * 
+	 * @param workerId
+	 *            Id of the worker to get the bit set for
+	 * @return Bit set for the worker
+	 */
+	private IncreasingBitSet getRequestSet(Integer workerId) {
+		IncreasingBitSet requestSet = workerRequestReservedMap.get(workerId);
+		if (requestSet == null) {
+			requestSet = new IncreasingBitSet();
+			IncreasingBitSet previous = workerRequestReservedMap.putIfAbsent(
+					workerId, requestSet);
+			if (previous != null) {
+				requestSet = previous;
+			}
+		}
+		return requestSet;
+	}
+
+	public void clearWorkerRequestReservedMap() {
+		workerRequestReservedMap.clear();
+	}
 }

@@ -18,64 +18,75 @@
 
 package org.apache.giraph.utils;
 
-import org.apache.hadoop.util.Progressable;
-
-import com.google.common.base.Preconditions;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import org.apache.hadoop.util.Progressable;
+import org.apache.log4j.Logger;
+
+import com.google.common.base.Preconditions;
+
 /**
- * Keeps a set of elements, and allows for waiting on certain number of
- * elements to become available. Assumes that at any point no more elements
- * than we'll be asking for will be added to the set. Reusable.
- *
- * @param <T> Element type
+ * Keeps a set of elements, and allows for waiting on certain number of elements
+ * to become available. Assumes that at any point no more elements than we'll be
+ * asking for will be added to the set. Reusable.
+ * 
+ * @param <T>
+ *            Element type
  */
 public class BlockingElementsSet<T> {
-  /** Semaphore to keep track of element count */
-  private final Semaphore semaphore = new Semaphore(0);
-  /** Elements */
-  private final List<T> elements =
-      Collections.synchronizedList(new ArrayList<T>());
 
-  /**
-   * Put an element in the set
-   *
-   * @param element Element to put
-   */
-  public void offer(T element) {
-    elements.add(element);
-    semaphore.release();
-  }
+	private static final Logger LOG = Logger
+			.getLogger(BlockingElementsSet.class);
+	/** Semaphore to keep track of element count */
+	private final Semaphore semaphore = new Semaphore(0);
+	/** Elements */
+	private final List<T> elements = Collections
+			.synchronizedList(new ArrayList<T>());
 
-  /**
-   * Get one element when it becomes available,
-   * reporting progress while waiting
-   *
-   * @param progressable Progressable to report progress
-   * @return Element acquired
-   */
-  public T getElement(Progressable progressable) {
-    return getElements(1, progressable).get(0);
-  }
+	/**
+	 * Put an element in the set
+	 * 
+	 * @param element
+	 *            Element to put
+	 */
+	public void offer(T element) {
+		elements.add(element);
+		semaphore.release();
+	}
 
-  /**
-   * Get desired number of elements when they become available,
-   * reporting progress while waiting
-   *
-   * @param elementCount How many elements to wait for
-   * @param progressable Progressable to report progress
-   * @return List of elements acquired
-   */
-  public List<T> getElements(int elementCount, Progressable progressable) {
-    ProgressableUtils.awaitSemaphorePermits(
-        semaphore, elementCount, progressable);
-    Preconditions.checkState(elements.size() == elementCount);
-    List<T> ret = new ArrayList<>(elements);
-    elements.clear();
-    return ret;
-  }
+	/**
+	 * Get one element when it becomes available, reporting progress while
+	 * waiting
+	 * 
+	 * @param progressable
+	 *            Progressable to report progress
+	 * @return Element acquired
+	 */
+	public T getElement(Progressable progressable) {
+		return getElements(1, progressable).get(0);
+	}
+
+	/**
+	 * Get desired number of elements when they become available, reporting
+	 * progress while waiting
+	 * 
+	 * @param elementCount
+	 *            How many elements to wait for
+	 * @param progressable
+	 *            Progressable to report progress
+	 * @return List of elements acquired
+	 */
+	public List<T> getElements(int elementCount, Progressable progressable) {
+		LOG.info("elementCount is:" + elementCount + " semaphore: "
+				+ semaphore.availablePermits());
+		ProgressableUtils.awaitSemaphorePermits(semaphore, elementCount,
+				progressable);
+		Preconditions.checkState(elements.size() == elementCount);
+		List<T> ret = new ArrayList<>(elements);
+		elements.clear();
+		return ret;
+	}
 }

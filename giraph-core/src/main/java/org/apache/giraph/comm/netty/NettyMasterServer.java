@@ -26,49 +26,59 @@ import org.apache.giraph.comm.flow_control.FlowControl;
 import org.apache.giraph.comm.netty.handler.MasterRequestServerHandler;
 import org.apache.giraph.conf.ImmutableClassesGiraphConfiguration;
 import org.apache.hadoop.util.Progressable;
+import org.apache.log4j.Logger;
 
 /**
  * Netty implementation of {@link MasterServer}
  */
 public class NettyMasterServer implements MasterServer {
-  /** Netty client that does the actual I/O */
-  private final NettyServer nettyServer;
+	/** Netty client that does the actual I/O */
+	private final NettyServer nettyServer;
 
-  /**
-   * Constructor
-   *
-   * @param conf Hadoop configuration
-   * @param service Centralized service
-   * @param progressable Progressable for reporting progress
-   * @param exceptionHandler to handle uncaught exceptions
-   */
-  public NettyMasterServer(ImmutableClassesGiraphConfiguration conf,
-      CentralizedServiceMaster<?, ?, ?> service,
-      Progressable progressable,
-      Thread.UncaughtExceptionHandler exceptionHandler) {
-    nettyServer = new NettyServer(conf,
-        new MasterRequestServerHandler.Factory(service.getGlobalCommHandler()),
-        service.getMasterInfo(), progressable, exceptionHandler);
-    nettyServer.start();
-  }
+	private static final Logger LOG = Logger.getLogger(NettyMasterServer.class);
 
-  @Override
-  public InetSocketAddress getMyAddress() {
-    return nettyServer.getMyAddress();
-  }
+	/**
+	 * Constructor
+	 * 
+	 * @param conf
+	 *            Hadoop configuration
+	 * @param service
+	 *            Centralized service
+	 * @param progressable
+	 *            Progressable for reporting progress
+	 * @param exceptionHandler
+	 *            to handle uncaught exceptions
+	 */
+	public NettyMasterServer(ImmutableClassesGiraphConfiguration conf,
+			CentralizedServiceMaster<?, ?, ?> service,
+			Progressable progressable,
+			Thread.UncaughtExceptionHandler exceptionHandler) {
+		nettyServer = new NettyServer(conf,
+				new MasterRequestServerHandler.Factory(service
+						.getGlobalCommHandler()),
+				service.getMasterInfo(), progressable, exceptionHandler);
 
-  @Override
-  public String getLocalHostOrIp() {
-    return nettyServer.getLocalHostOrIp();
-  }
+		LOG.info("begin to start NettyMasterServer!");
+		nettyServer.start();
+	}
 
-  @Override
-  public void close() {
-    nettyServer.stop();
-  }
+	@Override
+	public InetSocketAddress getMyAddress() {
+		return nettyServer.getMyAddress();
+	}
 
-  @Override
-  public void setFlowControl(FlowControl flowControl) {
-    nettyServer.setFlowControl(flowControl);
-  }
+	@Override
+	public String getLocalHostOrIp() {
+		return nettyServer.getLocalHostOrIp();
+	}
+
+	@Override
+	public void close() {
+		nettyServer.stop();
+	}
+
+	@Override
+	public void setFlowControl(FlowControl flowControl) {
+		nettyServer.setFlowControl(flowControl);
+	}
 }

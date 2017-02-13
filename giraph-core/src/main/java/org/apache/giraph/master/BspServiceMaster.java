@@ -265,6 +265,15 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			jobState.put(JSONOBJ_STATE_KEY, state.toString());
 			jobState.put(JSONOBJ_APPLICATION_ATTEMPT_KEY, applicationAttempt);
 			jobState.put(JSONOBJ_SUPERSTEP_KEY, desiredSuperstep);
+
+			// restart from checkpoint
+			/*
+			 * if (desiredSuperstep != UNSET_SUPERSTEP && desiredSuperstep >0) {
+			 * LOG.info(message); masterServer.close(); masterServer = new
+			 * NettyMasterServer(getConfiguration(), this, getContext(),
+			 * getGraphTaskManager() .createUncaughtExceptionHandler()); }
+			 */
+
 		} catch (JSONException e) {
 			throw new RuntimeException("setJobState: Couldn't put "
 					+ state.toString());
