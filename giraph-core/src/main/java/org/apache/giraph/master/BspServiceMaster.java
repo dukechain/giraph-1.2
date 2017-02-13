@@ -267,12 +267,14 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			jobState.put(JSONOBJ_SUPERSTEP_KEY, desiredSuperstep);
 
 			// restart from checkpoint
-			/*
-			 * if (desiredSuperstep != UNSET_SUPERSTEP && desiredSuperstep >0) {
-			 * LOG.info(message); masterServer.close(); masterServer = new
-			 * NettyMasterServer(getConfiguration(), this, getContext(),
-			 * getGraphTaskManager() .createUncaughtExceptionHandler()); }
-			 */
+
+			if (desiredSuperstep != UNSET_SUPERSTEP && desiredSuperstep > 0) {
+				LOG.info("try to clear the clearWorkerRequestReservedMap");
+				if (masterServer instanceof NettyMasterServer) {
+					((NettyMasterServer) masterServer).getNettyServer()
+							.clearWorkerRequestReservedMap();
+				}
+			}
 
 		} catch (JSONException e) {
 			throw new RuntimeException("setJobState: Couldn't put "

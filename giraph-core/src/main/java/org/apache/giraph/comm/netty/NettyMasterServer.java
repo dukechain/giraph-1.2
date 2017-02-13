@@ -81,4 +81,8 @@ public class NettyMasterServer implements MasterServer {
 	public void setFlowControl(FlowControl flowControl) {
 		nettyServer.setFlowControl(flowControl);
 	}
+
+	public NettyServer getNettyServer() {
+		return nettyServer;
+	}
 }
