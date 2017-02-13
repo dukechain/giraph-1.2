@@ -245,6 +245,12 @@ public class ProgressableUtils {
 			currentWaitMsecs = Math.min(msecs, msecsPeriod);
 			try {
 				waitable.waitFor(currentWaitMsecs);
+
+				LOG.info("waitFor: avaiable permits: "
+						+ ((SemaphoreWaitable) waitable).semaphore
+								.availablePermits() + "required permits: "
+						+ ((SemaphoreWaitable) waitable).permits);
+
 				if (waitable.isFinished()) {
 					return waitable.getResult();
 				}
@@ -259,10 +265,6 @@ public class ProgressableUtils {
 			}
 			if (LOG.isInfoEnabled()) {
 				LOG.info("waitFor: Waiting for " + waitable);
-				LOG.info("waitFor: avaiable permits: "
-						+ ((SemaphoreWaitable) waitable).semaphore
-								.availablePermits() + "required permits: "
-						+ ((SemaphoreWaitable) waitable).permits);
 			}
 			if (System.currentTimeMillis() >= timeoutTimeMsecs) {
 				return waitable.getTimeoutResult();
