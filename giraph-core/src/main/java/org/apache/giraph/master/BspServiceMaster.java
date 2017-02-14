@@ -188,6 +188,8 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 	private CheckpointStatus checkpointStatus;
 	/** Checks if checkpointing supported */
 	private final CheckpointSupportedChecker checkpointSupportedChecker;
+	
+	protected boolean masterStartedWithoutFailureTag;
 
 	/**
 	 * Constructor for setting up the master.
@@ -877,6 +879,18 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 							getConfiguration(), this, getGraphTaskManager()
 									.createUncaughtExceptionHandler());
 					masterServer.setFlowControl(masterClient.getFlowControl());
+					
+					String masterStartedWithoutFailureTagPath = basePath + "/_masterStarted";
+					if (getZkExt().exists(masterStartedWithoutFailureTagPath, false)!=null) {
+					    masterStartedWithoutFailureTag = false;
+					}
+					else {
+					    getZkExt().createExt(
+						    masterStartedWithoutFailureTagPath, null,
+							Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, true);
+					    masterStartedWithoutFailureTag = true;
+					}
+					
 
 					if (LOG.isInfoEnabled()) {
 						LOG.info("becomeMaster: I am now the master!");
@@ -1121,6 +1135,10 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 	 */
 	private void assignPartitionOwners() {
 		Collection<PartitionOwner> partitionOwners;
+
+		LOG.info("getRestartedSuperstep() = " + getRestartedSuperstep()
+				+ " getSuperstep() = " + getSuperstep());
+
 		if (getSuperstep() == INPUT_SUPERSTEP) {
 			partitionOwners = masterGraphPartitioner
 					.createInitialPartitionOwners(chosenWorkerInfoList,

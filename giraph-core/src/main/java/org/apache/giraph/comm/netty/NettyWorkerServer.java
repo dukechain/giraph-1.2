@@ -84,7 +84,7 @@ public class NettyWorkerServer<I extends WritableComparable, V extends Writable,
 				new WorkerRequestServerHandler.Factory<I, V, E>(serverData),
 				service.getWorkerInfo(), context, exceptionHandler);
 
-		LOG.info("begin to start NettyMasterServer!");
+		LOG.info("begin to start NettyWokerServer!");
 		nettyServer.start();
 	}
 

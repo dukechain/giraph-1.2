@@ -455,17 +455,25 @@ public class BspServiceWorker<I extends WritableComparable, V extends Writable, 
 		}
 
 		JSONObject jobState = getJobState();
+		
 		if (jobState != null) {
+		    LOG.info("bspWoker get the jobState: "+jobState.toString());
 			try {
 				if ((ApplicationState.valueOf(jobState
 						.getString(JSONOBJ_STATE_KEY)) == ApplicationState.START_SUPERSTEP)
-						&& jobState.getLong(JSONOBJ_SUPERSTEP_KEY) == getSuperstep()) {
+						//&& jobState.getLong(JSONOBJ_SUPERSTEP_KEY) == getSuperstep()) {
+				    && jobState.getLong(JSONOBJ_SUPERSTEP_KEY) >= 0) {
+				    
+				    setCachedSuperstep(jobState.getLong(JSONOBJ_SUPERSTEP_KEY));
+				    setRestartedSuperstep(jobState.getLong(JSONOBJ_SUPERSTEP_KEY));
+				    //setApplicationAttempt(jobState.getLong(JSONOBJ_APPLICATION_ATTEMPT_KEY));
+				    
 					if (LOG.isInfoEnabled()) {
 						LOG.info("setup: Restarting from an automated "
 								+ "checkpointed superstep " + getSuperstep()
 								+ ", attempt " + getApplicationAttempt());
 					}
-					setRestartedSuperstep(getSuperstep());
+					//setRestartedSuperstep(getSuperstep());
 					return new FinishedSuperstepStats(0, false, 0, 0, true,
 							CheckpointStatus.NONE);
 				}
@@ -474,6 +482,9 @@ public class BspServiceWorker<I extends WritableComparable, V extends Writable, 
 						"setup: Failed to get key-values from "
 								+ jobState.toString(), e);
 			}
+		}
+		else {
+		    LOG.info("bspWoker get the NULL jobState ");
 		}
 
 		// Add the partitions that this worker owns
