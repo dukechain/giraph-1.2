@@ -18,16 +18,36 @@
 
 package org.apache.giraph.comm.netty;
 
+import static com.google.common.base.Preconditions.checkState;
+import static org.apache.giraph.conf.GiraphConstants.MAX_IPC_PORT_BIND_ATTEMPTS;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.AdaptiveRecvByteBufAllocator;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.util.AttributeKey;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.concurrent.ImmediateEventExecutor;
+
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+
 import org.apache.giraph.comm.flow_control.FlowControl;
-
 import org.apache.giraph.comm.netty.handler.AuthorizeServerHandler;
-
 import org.apache.giraph.comm.netty.handler.RequestDecoder;
 import org.apache.giraph.comm.netty.handler.RequestServerHandler;
-
 import org.apache.giraph.comm.netty.handler.ResponseEncoder;
 import org.apache.giraph.comm.netty.handler.SaslServerHandler;
-
 import org.apache.giraph.comm.netty.handler.WorkerRequestReservedMap;
 import org.apache.giraph.conf.GiraphConstants;
 import org.apache.giraph.conf.ImmutableClassesGiraphConfiguration;
@@ -37,32 +57,6 @@ import org.apache.giraph.utils.ProgressableUtils;
 import org.apache.giraph.utils.ThreadUtils;
 import org.apache.hadoop.util.Progressable;
 import org.apache.log4j.Logger;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-
-import io.netty.util.AttributeKey;
-
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import io.netty.util.concurrent.EventExecutorGroup;
-import io.netty.util.concurrent.ImmediateEventExecutor;
-import io.netty.channel.AdaptiveRecvByteBufAllocator;
-
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-
-import static com.google.common.base.Preconditions.checkState;
-import static org.apache.giraph.conf.GiraphConstants.MAX_IPC_PORT_BIND_ATTEMPTS;
 
 /**
  * This server uses Netty and will implement all Giraph communication
@@ -428,6 +422,13 @@ public class NettyServer {
   public void setFlowControl(FlowControl flowControl) {
     checkState(requestServerHandlerFactory != null);
     requestServerHandlerFactory.setFlowControl(flowControl);
+  }
+  
+  /**
+   * Clear the WorkerRequestReservedMap. Usually called by master after worker failures.
+   */
+  public void clearWorkerRequestReservedMap() {
+      workerRequestReservedMap.clearWorkerRequestReservedMap();
   }
 }
 

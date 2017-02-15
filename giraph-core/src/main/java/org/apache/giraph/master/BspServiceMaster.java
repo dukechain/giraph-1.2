@@ -62,9 +62,9 @@ import org.apache.giraph.graph.GraphState;
 import org.apache.giraph.graph.GraphTaskManager;
 import org.apache.giraph.io.EdgeInputFormat;
 import org.apache.giraph.io.GiraphInputFormat;
+import org.apache.giraph.io.InputType;
 import org.apache.giraph.io.MappingInputFormat;
 import org.apache.giraph.io.VertexInputFormat;
-import org.apache.giraph.io.InputType;
 import org.apache.giraph.master.input.MasterInputSplitsHandler;
 import org.apache.giraph.metrics.AggregatedMetrics;
 import org.apache.giraph.metrics.GiraphMetrics;
@@ -1202,6 +1202,16 @@ public class BspServiceMaster<I extends WritableComparable,
     setJobState(ApplicationState.START_SUPERSTEP,
         getApplicationAttempt(),
         checkpoint);
+    
+    // Workers send messages using ids since 0 after failures  
+    // Master need to clear the WorkerRequestReservedMap in order to get the messages from workers
+    // Otherwise, the messages from new initilized workers are duplicated and discarded by WorkerRequestReservedMap
+    if (checkpoint != UNSET_SUPERSTEP && checkpoint > 0) {
+	LOG.info("Try to clear the clearWorkerRequestReservedMap");
+	if (masterServer instanceof NettyMasterServer) {
+	    ((NettyMasterServer) masterServer).getNettyServer().clearWorkerRequestReservedMap();
+	}
+    }
   }
 
   /**
