@@ -423,12 +423,13 @@ public class NettyServer {
     checkState(requestServerHandlerFactory != null);
     requestServerHandlerFactory.setFlowControl(flowControl);
   }
-  
+
   /**
-   * Clear the WorkerRequestReservedMap. Usually called by master after worker failures.
+   * Clear the WorkerRequestReservedMap.
+   * Usually called by master after worker failures.
    */
   public void clearWorkerRequestReservedMap() {
-      workerRequestReservedMap.clearWorkerRequestReservedMap();
+    workerRequestReservedMap.clearWorkerRequestReservedMap();
   }
 }
 

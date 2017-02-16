@@ -1213,15 +1213,20 @@ public class BspServiceMaster<I extends WritableComparable,
     setJobState(ApplicationState.START_SUPERSTEP,
         getApplicationAttempt(),
         checkpoint);
-    
-    // Workers send messages using ids since 0 after failures  
-    // Master need to clear the WorkerRequestReservedMap in order to get the messages from workers
-    // Otherwise, the messages from new initilized workers are duplicated and discarded by WorkerRequestReservedMap
+
+    /**
+     * Workers send messages using ids since 0 after failures
+     * Master need to clear the WorkerRequestReservedMap,
+     * in order to get the messages from workers.
+     * Otherwise, the messages from new initilized workers are duplicated
+     * and discarded by WorkerRequestReservedMap
+     */
     if (checkpoint != UNSET_SUPERSTEP && checkpoint > 0) {
-	LOG.info("Try to clear the clearWorkerRequestReservedMap");
-	if (masterServer instanceof NettyMasterServer) {
-	    ((NettyMasterServer) masterServer).getNettyServer().clearWorkerRequestReservedMap();
-	}
+      LOG.info("Try to clear the clearWorkerRequestReservedMap");
+      if (masterServer instanceof NettyMasterServer) {
+        ((NettyMasterServer) masterServer).getNettyServer().
+          clearWorkerRequestReservedMap();
+      }
     }
   }
 

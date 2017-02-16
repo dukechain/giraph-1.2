@@ -77,11 +77,12 @@ public class WorkerRequestReservedMap {
     }
     return requestSet;
   }
-  
+
   /**
-   * Clear the WorkerRequestReservedMap. Usually called by master after worker failures.
+   * Clear the WorkerRequestReservedMap.
+   * Usually called by master after worker failures.
    */
   public void clearWorkerRequestReservedMap() {
-      workerRequestReservedMap.clear();
+    workerRequestReservedMap.clear();
   }
 }
