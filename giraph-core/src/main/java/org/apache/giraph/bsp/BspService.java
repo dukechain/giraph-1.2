@@ -18,6 +18,15 @@
 
 package org.apache.giraph.bsp;
 
+import static org.apache.giraph.conf.GiraphConstants.RESTART_JOB_ID;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.giraph.conf.GiraphConstants;
 import org.apache.giraph.conf.ImmutableClassesGiraphConfiguration;
 import org.apache.giraph.graph.GraphTaskManager;
@@ -43,15 +52,6 @@ import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.apache.giraph.conf.GiraphConstants.RESTART_JOB_ID;
 
 /**
  * Zookeeper-based implementation of {@link CentralizedService}.
@@ -87,6 +87,8 @@ public abstract class BspService<I extends WritableComparable,
       "/_applicationAttemptsDir";
   /** Where the master election happens */
   public static final String MASTER_ELECTION_DIR = "/_masterElectionDir";
+  /** Master has been started already */
+  public static final String MASTER_AlREADY_STARTED_NODE = "/_masterStarted";
   /** Superstep scope */
   public static final String SUPERSTEP_DIR = "/_superstepDir";
   /** Healthy workers register here. */
@@ -155,6 +157,8 @@ public abstract class BspService<I extends WritableComparable,
   protected final String haltComputationPath;
   /** Path where memory observer stores data */
   protected final String memoryObserverPath;
+  /** Path where the first master creates a znode */
+  protected final String masterStartedWithoutFailureTagPath;
   /** Private ZooKeeper instance that implements the service */
   private final ZooKeeperExt zk;
   /** Has the Connection occurred? */
@@ -251,7 +255,8 @@ public abstract class BspService<I extends WritableComparable,
     inputSplitsAllDonePath = basePath + INPUT_SPLITS_ALL_DONE_NODE;
     applicationAttemptsPath = basePath + APPLICATION_ATTEMPTS_DIR;
     cleanedUpPath = basePath + CLEANED_UP_DIR;
-
+    masterStartedWithoutFailureTagPath = basePath + MASTER_AlREADY_STARTED_NODE;
+    
     String restartJobId = RESTART_JOB_ID.get(conf);
 
     savedCheckpointBasePath =

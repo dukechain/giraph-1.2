@@ -62,9 +62,9 @@ import org.apache.giraph.graph.GraphState;
 import org.apache.giraph.graph.GraphTaskManager;
 import org.apache.giraph.io.EdgeInputFormat;
 import org.apache.giraph.io.GiraphInputFormat;
+import org.apache.giraph.io.InputType;
 import org.apache.giraph.io.MappingInputFormat;
 import org.apache.giraph.io.VertexInputFormat;
-import org.apache.giraph.io.InputType;
 import org.apache.giraph.master.input.MasterInputSplitsHandler;
 import org.apache.giraph.metrics.AggregatedMetrics;
 import org.apache.giraph.metrics.GiraphMetrics;
@@ -189,7 +189,8 @@ public class BspServiceMaster<I extends WritableComparable,
   private CheckpointStatus checkpointStatus;
   /** Checks if checkpointing supported */
   private final CheckpointSupportedChecker checkpointSupportedChecker;
-
+  /** This master is not a restarted one if this tag is true   */
+  protected boolean masterStartedWithoutFailureTag;
   /**
    * Constructor for setting up the master.
    *
@@ -855,6 +856,15 @@ public class BspServiceMaster<I extends WritableComparable,
               new NettyMasterClient(getContext(), getConfiguration(), this,
                   getGraphTaskManager().createUncaughtExceptionHandler());
           masterServer.setFlowControl(masterClient.getFlowControl());
+          
+          if (getZkExt().exists(masterStartedWithoutFailureTagPath, false)!=null) {
+              masterStartedWithoutFailureTag = false;
+          }
+          else {
+              getZkExt().createExt(masterStartedWithoutFailureTagPath, null,
+        	      Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, true); 
+              masterStartedWithoutFailureTag = true;
+          }
 
           if (LOG.isInfoEnabled()) {
             LOG.info("becomeMaster: I am now the master!");

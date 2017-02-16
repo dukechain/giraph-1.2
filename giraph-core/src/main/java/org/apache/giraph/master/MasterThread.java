@@ -18,6 +18,12 @@
 
 package org.apache.giraph.master;
 
+import static org.apache.giraph.conf.GiraphConstants.USE_SUPERSTEP_COUNTERS;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 import org.apache.giraph.bsp.ApplicationState;
 import org.apache.giraph.bsp.BspService;
 import org.apache.giraph.bsp.CentralizedServiceMaster;
@@ -29,12 +35,6 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.log4j.Logger;
-
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import static org.apache.giraph.conf.GiraphConstants.USE_SUPERSTEP_COUNTERS;
 
 /**
  * Master thread that will coordinate the activities of the tasks.  It runs
@@ -99,6 +99,16 @@ public class MasterThread<I extends WritableComparable, V extends Writable,
       SuperstepState superstepState = SuperstepState.INITIAL;
 
       if (bspServiceMaster.becomeMaster()) {
+	// restart from checkpoint (e.g. setting the job state, etc) if this is a restarted master 
+	BspServiceMaster master = (BspServiceMaster) bspServiceMaster;
+	if (!master.masterStartedWithoutFailureTag) {
+	// reset the checkpoint but not from -1 (will fix later) 
+	    long goodcheckpoint = bspServiceMaster.getLastGoodCheckpoint();
+	    if(goodcheckpoint != -1){
+		bspServiceMaster.restartFromCheckpoint(goodcheckpoint);
+	    }
+	}  
+	  
         // First call to checkWorkers waits for all pending resources.
         // If these resources are still available at subsequent calls it just
         // reads zookeeper for the list of healthy workers.
