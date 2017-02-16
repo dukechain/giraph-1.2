@@ -473,8 +473,15 @@ public class BspServiceWorker<I extends WritableComparable,
       try {
         if ((ApplicationState.valueOf(jobState.getString(JSONOBJ_STATE_KEY)) ==
             ApplicationState.START_SUPERSTEP) &&
-            jobState.getLong(JSONOBJ_SUPERSTEP_KEY) ==
-            getSuperstep()) {
+            // this condition is not necessary
+            //&& jobState.getLong(JSONOBJ_SUPERSTEP_KEY) == getSuperstep()
+            // do not restart from -1 but will fix it later
+            jobState.getLong(JSONOBJ_SUPERSTEP_KEY) >= 0
+            ) {
+          // set the current superstep according to the
+          //job state specified by master
+          setCachedSuperstep(jobState.getLong(JSONOBJ_SUPERSTEP_KEY));
+
           if (LOG.isInfoEnabled()) {
             LOG.info("setup: Restarting from an automated " +
                 "checkpointed superstep " +
