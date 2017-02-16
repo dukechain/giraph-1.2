@@ -88,7 +88,7 @@ public abstract class BspService<I extends WritableComparable,
   /** Where the master election happens */
   public static final String MASTER_ELECTION_DIR = "/_masterElectionDir";
   /** Master has been started already */
-  public static final String MASTER_AlREADY_STARTED_NODE = "/_masterStarted";
+  public static final String MASTER_ALREADY_STARTED_NODE = "/_masterStarted";
   /** Superstep scope */
   public static final String SUPERSTEP_DIR = "/_superstepDir";
   /** Healthy workers register here. */
@@ -255,8 +255,8 @@ public abstract class BspService<I extends WritableComparable,
     inputSplitsAllDonePath = basePath + INPUT_SPLITS_ALL_DONE_NODE;
     applicationAttemptsPath = basePath + APPLICATION_ATTEMPTS_DIR;
     cleanedUpPath = basePath + CLEANED_UP_DIR;
-    masterStartedWithoutFailureTagPath = basePath + MASTER_AlREADY_STARTED_NODE;
-    
+    masterStartedWithoutFailureTagPath = basePath + MASTER_ALREADY_STARTED_NODE;
+
     String restartJobId = RESTART_JOB_ID.get(conf);
 
     savedCheckpointBasePath =

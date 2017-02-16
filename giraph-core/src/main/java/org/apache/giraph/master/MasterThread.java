@@ -99,16 +99,17 @@ public class MasterThread<I extends WritableComparable, V extends Writable,
       SuperstepState superstepState = SuperstepState.INITIAL;
 
       if (bspServiceMaster.becomeMaster()) {
-	// restart from checkpoint (e.g. setting the job state, etc) if this is a restarted master 
-	BspServiceMaster master = (BspServiceMaster) bspServiceMaster;
-	if (!master.masterStartedWithoutFailureTag) {
-	// reset the checkpoint but not from -1 (will fix later) 
-	    long goodcheckpoint = bspServiceMaster.getLastGoodCheckpoint();
-	    if(goodcheckpoint != -1){
-		bspServiceMaster.restartFromCheckpoint(goodcheckpoint);
-	    }
-	}  
-	  
+        // restart from checkpoint (e.g. setting the job state, etc)
+        // if this is a restarted master
+        BspServiceMaster master = (BspServiceMaster) bspServiceMaster;
+        if (!master.masterStartedWithoutFailureTag) {
+          // reset the checkpoint but not from -1 (will fix later)
+          long goodcheckpoint = bspServiceMaster.getLastGoodCheckpoint();
+          if (goodcheckpoint != -1) {
+            bspServiceMaster.restartFromCheckpoint(goodcheckpoint);
+          }
+        }
+
         // First call to checkWorkers waits for all pending resources.
         // If these resources are still available at subsequent calls it just
         // reads zookeeper for the list of healthy workers.
