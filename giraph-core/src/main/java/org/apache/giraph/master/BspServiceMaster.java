@@ -1241,6 +1241,11 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 				chosenWorkerInfoHealthPath, false);
 		Set<WorkerInfo> chosenWorkerInfoHealthySet = new HashSet<WorkerInfo>(
 				chosenWorkerInfoHealthyList);
+		
+		LOG.info("chosenWorkerInfoList is: " + chosenWorkerInfoList);
+		
+		LOG.info("chosenWorkerInfoHealthyList is: "+ chosenWorkerInfoHealthyList);
+		
 		List<WorkerInfo> deadWorkers = new ArrayList<>();
 		for (WorkerInfo chosenWorkerInfo : chosenWorkerInfoList) {
 			if (!chosenWorkerInfoHealthySet.contains(chosenWorkerInfo)) {
