@@ -1305,7 +1305,7 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 		// knowledge of this master
 		
 
-		return getLastTwoGoodCheckpoint();
+		return getLastTwoCheckpointedSuperstep();
 	}
 
 	/**
