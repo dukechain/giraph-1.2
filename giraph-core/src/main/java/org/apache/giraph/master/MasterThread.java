@@ -157,8 +157,13 @@ public class MasterThread<I extends WritableComparable, V extends Writable,
 
             // If a worker failed, restart from a known good superstep
             if (superstepState == SuperstepState.WORKER_FAILURE) {
-              bspServiceMaster.restartFromCheckpoint(
-                  bspServiceMaster.getLastGoodCheckpoint());
+        	long[] lastTwoGoodCheckpoints = bspServiceMaster.getLastTwoGoodCheckpoint();
+        	if (lastTwoGoodCheckpoints[1] != bspServiceMaster.getSuperstep()) {
+        	    bspServiceMaster.restartFromCheckpoint(
+        		    lastTwoGoodCheckpoints[1]);
+		} else {
+		    bspServiceMaster.restartFromCheckpoint(lastTwoGoodCheckpoints[0]);
+		}
             }
             endMillis = System.currentTimeMillis();
           }

@@ -952,6 +952,17 @@ public abstract class BspService<I extends WritableComparable, V extends Writabl
 		return CheckpointingUtils.getLastCheckpointedSuperstep(getFs(),
 				savedCheckpointBasePath);
 	}
+	
+	/**
+	 * Get the last saved superstep.
+	 * 
+	 * @return Last good superstep number
+	 * @throws IOException
+	 */
+	protected long[] getLastTwoCheckpointedSuperstep() throws IOException {
+		return CheckpointingUtils.getLastTwoCheckpointedSuperstep(getFs(),
+				savedCheckpointBasePath);
+	}
 
 	@Override
 	public JobProgressTracker getJobProgressTracker() {

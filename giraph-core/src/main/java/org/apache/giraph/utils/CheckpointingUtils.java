@@ -18,17 +18,17 @@
 
 package org.apache.giraph.utils;
 
+import static org.apache.giraph.conf.GiraphConstants.CHECKPOINT_DIRECTORY;
+
+import java.io.IOException;
+import java.security.InvalidParameterException;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.security.InvalidParameterException;
-
-import static org.apache.giraph.conf.GiraphConstants.CHECKPOINT_DIRECTORY;
 
 /**
  * Holds useful functions to get checkpoint paths
@@ -124,6 +124,32 @@ public class CheckpointingUtils {
     }
     return -1;
   }
+  
+  public static long[] getLastTwoCheckpointedSuperstep(
+	      FileSystem fs, String checkpointBasePath) throws IOException {
+	    Path cpPath = new Path(checkpointBasePath);
+	    if (fs.exists(cpPath)) {
+	      FileStatus[] fileStatusArray =
+	          fs.listStatus(cpPath, new FinalizedCheckpointPathFilter());
+	      if (fileStatusArray != null) {
+	        long lastCheckpointedSuperstep = -1;
+	        long secondarylastCheckpointedSuperstep = -1;
+	        for (FileStatus file : fileStatusArray) {
+	          long superstep = getCheckpoint(file);
+	          if (superstep > lastCheckpointedSuperstep) {
+	              secondarylastCheckpointedSuperstep = lastCheckpointedSuperstep;
+	            lastCheckpointedSuperstep = superstep;
+	          }
+	        }
+	        if (LOG.isInfoEnabled()) {
+	          LOG.info("getLastGoodCheckpoint: Found last good checkpoint " +
+	              lastCheckpointedSuperstep);
+	        }
+	        return new long[]{secondarylastCheckpointedSuperstep,lastCheckpointedSuperstep};
+	      }
+	    }
+	    return new long[]{-1,-1};
+	  }
 
   /**
    * Get the checkpoint from a finalized checkpoint path

@@ -117,6 +117,14 @@ public interface CentralizedServiceMaster<I extends WritableComparable,
    * @throws IOException
    */
   long getLastGoodCheckpoint() throws IOException;
+  
+  /**
+   * Get the last known good checkpoint
+   *
+   * @return Last good superstep number
+   * @throws IOException
+   */
+  long[] getLastTwoGoodCheckpoint() throws IOException;
 
   /**
    * If the master decides that this job doesn't have the resources to

@@ -1298,6 +1298,15 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 
 		return lastCheckpointedSuperstep;
 	}
+	
+	@Override
+	public long[] getLastTwoGoodCheckpoint() throws IOException {
+		// Find the last good checkpoint if none have been written to the
+		// knowledge of this master
+		
+
+		return getLastTwoGoodCheckpoint();
+	}
 
 	/**
 	 * Wait for a set of workers to signal that they are done with the barrier.
