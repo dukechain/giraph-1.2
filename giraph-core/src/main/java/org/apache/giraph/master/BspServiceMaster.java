@@ -1397,7 +1397,8 @@ public class BspServiceMaster<I extends WritableComparable,
         logInfoOnlyRun = false;
       } else {
         logInfoOnlyRun = true;
-        continue;
+        // check the workers anyway  
+        //continue;
       }
 
       // Did a worker die?
@@ -1617,6 +1618,9 @@ public class BspServiceMaster<I extends WritableComparable,
           chosenWorkerInfoList,
           getWorkerWroteCheckpointEvent(),
           checkpointStatus == CheckpointStatus.CHECKPOINT_AND_HALT)) {
+        // if a worker fails during checkpointing, giraph restarts
+        // from a good checkpoint and checkpointing would not applied
+        checkpointStatus = checkpointStatus.NONE;
         return SuperstepState.WORKER_FAILURE;
       }
       try {
