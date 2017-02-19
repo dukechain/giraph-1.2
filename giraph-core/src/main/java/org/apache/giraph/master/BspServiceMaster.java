@@ -295,6 +295,7 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 							Ids.OPEN_ACL_UNSAFE,
 							CreateMode.PERSISTENT_SEQUENTIAL, true);
 			LOG.info("setJobState: " + jobState);
+			
 		} catch (KeeperException.NodeExistsException e) {
 			throw new IllegalStateException("setJobState: Imposible that "
 					+ masterJobStatePath + " already exists!", e);
@@ -1656,6 +1657,10 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			if (!barrierOnWorkerList(workerWroteCheckpointPath,
 					chosenWorkerInfoList, getWorkerWroteCheckpointEvent(),
 					checkpointStatus == CheckpointStatus.CHECKPOINT_AND_HALT)) {
+			    
+			    LOG.info("checkpointStatus is " + checkpointStatus.toString());
+				
+				checkpointStatus = checkpointStatus.NONE;
 				return SuperstepState.WORKER_FAILURE;
 			}
 			try {
