@@ -1442,8 +1442,10 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			if (eventTriggered || taskTimeoutMsec == eventLoopTimeout
 					|| elapsedTimeSinceRegularRunMsec >= taskTimeoutMsec) {
 				logInfoOnlyRun = false;
+				LOG.info("logInfoOnlyRun is "+logInfoOnlyRun);
 			} else {
 				logInfoOnlyRun = true;
+				LOG.info("logInfoOnlyRun is "+logInfoOnlyRun);
 				continue;
 			}
 
