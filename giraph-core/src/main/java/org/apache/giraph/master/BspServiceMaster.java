@@ -1446,7 +1446,7 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 			} else {
 				logInfoOnlyRun = true;
 				LOG.info("logInfoOnlyRun is "+logInfoOnlyRun);
-				continue;
+				//continue;
 			}
 
 			// Did a worker die?
