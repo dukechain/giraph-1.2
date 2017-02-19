@@ -2096,6 +2096,8 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 				LOG.debug("processEvent: Healthy worker died (node deleted) "
 						+ "in " + event.getPath());
 			}
+			LOG.info("processEvent: Healthy worker died (node deleted) "
+				+ "in " + event.getPath());
 			checkHealthyWorkerFailure(event.getPath());
 			superstepStateChanged.signal();
 			foundEvent = true;
@@ -2105,6 +2107,8 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 				LOG.debug("processEvent: Worker finished (node change) "
 						+ "event - superstepStateChanged signaled");
 			}
+			LOG.info("processEvent: Worker finished (node change) "
+				+ "event - superstepStateChanged signaled");
 			superstepStateChanged.signal();
 			foundEvent = true;
 		} else if (event.getPath().contains(WORKER_WROTE_CHECKPOINT_DIR)
@@ -2113,6 +2117,8 @@ public class BspServiceMaster<I extends WritableComparable, V extends Writable, 
 				LOG.debug("processEvent: Worker wrote checkpoint (node change) "
 						+ "event - workerWroteCheckpoint signaled");
 			}
+			LOG.info("processEvent: Worker wrote checkpoint (node change) "
+				+ "event - workerWroteCheckpoint signaled");
 			workerWroteCheckpoint.signal();
 			foundEvent = true;
 		}
